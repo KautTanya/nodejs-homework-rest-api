@@ -75,21 +75,22 @@ const addContact = async (name, email, phone) => {
 
 const updateContact = async (contactId, body) => {
   try{
-    const contacts = await listContacts();
-    const newData = null;
-    contacts.map((contact) => {
-            if (contact.id === contactId) {
-              if (body.name) {
-                contact.name = body.name;
-              }
-              if (body.email) {
-                contact.email = body.email;
-              }
-              if (body.phone) {
-                contact.phone = body.phone;
-              }
-              newData = contact;
-            }});
+    const contacts = await readData();
+    let newData = null;
+   contacts.forEach((contact) =>  {
+      if (contact.id === contactId) {
+        if (body.name) {
+          contact.name = body.name;
+        }
+        if (body.email) {
+          contact.email = body.email;
+        }
+        if (body.phone) {
+          contact.phone = body.phone;
+        }
+        newData = contact;
+      }
+    });
        
     await writeData(contacts);
     return (newData);
