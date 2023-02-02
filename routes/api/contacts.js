@@ -1,4 +1,5 @@
-const controlers = require("../../controllers/controllers");
+// const controlers = require("../../controllers/controllers");
+const controlers = require("../../controllers/contactsControllers");
 const express = require('express');
 const router = express.Router();
 
@@ -22,5 +23,7 @@ router.delete('/:contactId', async (req, res, next) => {
 router.put('/:contactId', async (req, res, next) => {
   controlers.putContact(req, res, next);
 })
-
+router.patch('/:contactId/favorite', async (req, res, next) => {
+  controlers.updateStatusContact(req, res, next);
+})
 module.exports = router;
