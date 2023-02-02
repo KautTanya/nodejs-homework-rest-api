@@ -1,5 +1,4 @@
-// const controlers = require("../../controllers/controllers");
-const controlers = require("../../controllers/contactsControllers");
+const controlers = require("../../controllers/contacts/index");
 const express = require('express');
 const router = express.Router();
 
