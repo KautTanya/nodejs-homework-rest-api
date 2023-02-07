@@ -1,16 +1,20 @@
-const {Contact} = require("../../MongoDb/contactModel");
+const server = require("../../services/contacts");
 
-
-const getListById = async (req, res, next) => {
-      const {contactId} = req.params;
-      const contact = await Contact.findById(contactId);
-      if(!contact) {
-        return res.status(404).json({ message: 'Not found' })
-      }
-      res.status(200).json({contact})
-     
-  };
-
-  module.exports = {
-    getListById,
-   }
+const getListById = async (req, res) => {
+  try {
+    const { contactId } = req.params;
+    const { _id: userId } = req.user;
+    const contact = await server.getContactById(contactId, userId);
+    if (!contact) {
+      return res
+        .status(400)
+        .json({ message: `failure, no contact with id= ${contactId} found` });
+    }
+    res.json({ contact, message: "success" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+module.exports = {
+  getListById,
+};

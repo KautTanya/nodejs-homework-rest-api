@@ -1,10 +1,17 @@
-const {Contact} = require("../../MongoDb/contactModel");
+const server = require("../../services/contacts");
 
-const getList = async (req, res, next) => {
-        const list = await Contact.find();
-        res.status(200).json(list);
-   };
-   
-   module.exports = {
-    getList,
-   }
+const getList = async (req, res) => {
+  try {
+    const { _id: userId } = req.user;
+    console.log("req.user", req.user);
+    const list = await server.listContacts(userId);
+
+    console.log("list", list);
+    res.json(list);
+  } catch (error) {
+    console.log(error);
+  }
+};
+module.exports = {
+  getList,
+};

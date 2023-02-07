@@ -1,14 +1,20 @@
-const {Contact} = require("../../MongoDb/contactModel");
+const server = require("../../services/contacts");
 
-const deleteContact = async (req, res, next) => {
-    const {contactId} = req.params;
-    const contact = await Contact.findById(contactId); 
-    await Contact.findByIdAndRemove(contactId);
-      if(!contact){
-        return res.status(404).json({ message: 'Not found' })
-      }
-    res.status(200).json({ message: 'contact deleted' })
- 
+const deleteContact = async (req, res) => {
+  try {
+    const { contactId } = req.params;
+    const { _id: userId } = req.user;
+    const contact = await server.getContactById(contactId, userId);
+    await server.removeContact(contactId);
+    if (!contact) {
+      return res
+        .status(400)
+        .json({ message: `failure, no contact with id= ${contactId} found` });
+    }
+    res.json({ message: "contact deleted" });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = {

@@ -1,20 +1,19 @@
-const {Contact} = require("../../MongoDb/contactModel");
+const server = require("../../services/contacts");
 
-const updateStatusContact = async (req, res, next) =>{
-    const {contactId} = req.params;
-    const contact = await Contact.findById(contactId); 
-    if(!contact){
-        return res.status(404).json({ message: 'Not found' })
-      }
-      
-    const {favorite} = req.body;
+const updateStatusContact = async (req, res) => {
+  try {
+    const { contactId } = req.params;
+    const { _id: userId } = req.user;
     if (Object.keys(req.body).length === 0) {
-        return res.status(400).json({ message: "missing field favorite" });
+      console.log("bye");
+      return res.status(400).json({ message: "missing fields" });
     }
-    const updateStatus = await Contact.findByIdAndUpdate(contactId, {favorite});
-    res.status(200).json(updateStatus);
-}
-
+    const contact = await server.updateContact(contactId, req.body, userId);
+    res.json({ contact, message: "success" });
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
-    updateStatusContact,
-   }
+  updateStatusContact,
+};

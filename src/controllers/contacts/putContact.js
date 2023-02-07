@@ -1,25 +1,24 @@
-const {Contact} = require("../../MongoDb/contactModel");
+const server = require("../../services/contacts");
 const schema = require("../../schemas/schemas");
-
-
-const putContact = async (req, res, next) => {
-    
-    const validationResult = schema.shemaPut.validate(req.body);
+const putById = async (req, res) => {
+  try {
+    const validationResult = schema.schemaPut.validate(req.body);
     if (validationResult.error) {
-      return res.status(404).json({ "message": "Not found" });
+      return res.status(400).json({ status: validationResult.error });
     }
-  
-    const {contactId} = req.params;
+    const { contactId } = req.params;
+    const { _id: userId } = req.user;
     if (Object.keys(req.body).length === 0) {
-        return res.status(400).json({ message: "missing fields" });
+      console.log("bye");
+      return res.status(400).json({ message: "missing fields" });
     }
-    const {name, email, phone, favorite = false} = req.body;
-    const updateContact = await Contact.findByIdAndUpdate(contactId, req.body);
-  
-    res.status(200).json(updateContact);
-   
+    const contact = await server.updateContact(contactId, req.body, userId);
+
+    res.json({ contact, message: "success" });
+  } catch (error) {
+    console.log(error);
+  }
 };
-   
-   module.exports = {
-    putContact,
-   }
+module.exports = {
+  putById,
+};
